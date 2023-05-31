@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>쿵쿵따</title>
+    <style>
+      body {
+        background-color: #f4f4f4;
+        font-family: Arial, sans-serif;
+      }
+
+      .word-ending-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+      }
+
+      .prev-word {
+        font-style: italic;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      .time-container {
+        color: red;
+        margin-bottom: 10px;
+        font-size: 24px;
+      }
+
+      .input-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #input-word {
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        width: 200px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      #input-word:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px #007bff;
+      }
+
+      .game-over {
+        margin-top: 20px;
+        font-size: 24px;
+        color: red;
+      }
+
+      .restart-button {
+        margin-top: 20px;
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="word-ending-container">
+      <div class="prev-word">이전 단어</div>
+      <div class="time-container">시간</div>
+      <div class="input-container">
+        <input id="input-word" type="text" onchange="updateWord(this.value)" />
+      </div>
+    </div>
+    <script>
+      const words = ["자동차", "두꺼비", "전지현", "옷걸이", "칼국수"];
+      const index = Math.floor(Math.random() * 5); // 0 ~ 4
+      let word = words[index];
+      let timeCount = 5;
+      const prevWord = document.querySelector(".prev-word");
+      const time = document.querySelector(".time-container");
+      const input = document.getElementById("input-word");
+      const defaultOutline = input.style.outline;
+
+      prevWord.innerHTML = word;
+      time.innerHTML = timeCount;
+
+      const tick = () => {
+        time.innerHTML = timeCount;
+        if (timeCount === 0) {
+          clearInterval(start);
+          gameOver();
+        } else {
+          timeCount -= 1;
+        }
+      };
+      const start = setInterval(tick, 1000);
+
+      const updateWord = (value) => {
+        const lastPrev = word[word.length - 1];
+        const firstNext = value[0];
+        if (value.length === 3 && lastPrev === firstNext) {
+          word = value;
+          prevWord.innerHTML = word;
+          timeCount = 5;
+          primaryInput();
+        } else {
+          warningInput();
+        }
+        input.value = "";
+      };
+      const warningInput = () => {
+        input.style.outline = "1px solid red";
+      };
+      const primaryInput = () => {
+        input.style.outline = defaultOutline;
+      };
+      const gameOver = () => {
+        const container = document.querySelector(".word-ending-container");
+        container.innerHTML +=
+          "<div class='game-over'>Game Over!</div><button class='restart-button' onclick='restartGame()'>다시 시작</button>";
+      };
+      const restartGame = () => {
+        window.location.reload();
+      };
+    </script>
+  </body>
+</html>
